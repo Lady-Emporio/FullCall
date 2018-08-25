@@ -2,12 +2,7 @@
 #define SETTINGS_GUI_H
 
 #include "Settings/settings.h"
-#include <QLineEdit>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QFileDialog>
+#include "allinclude.h"
 class Settings_gui : public QWidget
 {
     Q_OBJECT

@@ -1,15 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QMdiArea>
-#include <QMdiSubWindow>
+#include "allinclude.h"
+#include "Catalogs/Cars/carslist.h"
 #include <Settings/settings.h>
 #include <Settings/settings_gui.h>
-#include <QDebug>
-#include <QVBoxLayout>
-#include <QListWidget>
-#include <QMenuBar>
+
 
 class MainWindow : public QMainWindow
 {
@@ -21,6 +17,7 @@ public:
     ~MainWindow();
 private slots:
     void action_Settings();
+    void action_CarsList();
 };
 
 #endif // MAINWINDOW_H

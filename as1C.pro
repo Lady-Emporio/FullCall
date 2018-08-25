@@ -15,8 +15,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     Settings/settings.cpp \
-    Settings/settings_gui.cpp
+    Settings/settings_gui.cpp \
+    Catalogs/Cars/carslist.cpp
 
 HEADERS  += mainwindow.h \
     Settings/settings.h \
-    Settings/settings_gui.h
+    Settings/settings_gui.h \
+    Catalogs/Cars/carslist.h \
+    allinclude.h
