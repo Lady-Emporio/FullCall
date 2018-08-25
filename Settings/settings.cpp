@@ -80,11 +80,11 @@ void Settings::createTables()
       " _mark text CHECK (_mark=0 or _mark=1), "
       " _presentation text "
       " ); "
-    <<" CREATE TRIGGER orders_presentation_inser AFTER INSERT ON orders "
+    <<" CREATE TRIGGER IF NOT EXISTS orders_presentation_inser AFTER INSERT ON orders "
       " BEGIN  "
       "     UPDATE orders SET _presentation=NEW._manager||' for '||NEW._client||' in '||NEW._workList; "
       " END; "
-    <<" CREATE TRIGGER orders_presentation_update AFTER UPDATE ON orders "
+    <<" CREATE TRIGGER IF NOT EXISTS orders_presentation_update AFTER UPDATE ON orders "
       " BEGIN  "
       "     UPDATE orders SET _presentation=NEW._manager||' for '||NEW._client||' in '||NEW._workList; "
       " END; "
@@ -111,7 +111,10 @@ void Settings::createTables()
     for(QString sql:sqls){
         QSqlQuery query(_db);
         if(!query.exec(sql)){
-            Settings::GetErrorMessage(&query);
+            QMessageBox msgBox;
+            msgBox.setText(_db.lastError().text()+" |\n "+query.lastError().text()+" |\n "+query.lastQuery());
+            msgBox.exec();
+            return;
         }
     }
 }

@@ -5,6 +5,7 @@
 CarsList::CarsList(QWidget *parent) : QWidget(parent)
 {
     makeGui();
+    action_refreshModel();
 }
 
 void CarsList::action_addRow()
@@ -14,6 +15,7 @@ void CarsList::action_addRow()
 
 void CarsList::action_refreshModel()
 {
+    filter->setText("");
     model->select();
 }
 

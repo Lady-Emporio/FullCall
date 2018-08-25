@@ -26,4 +26,6 @@
 #include <QMdiSubWindow>
 #include <QSqlTableModel>
 #include <QTableView>
+#include <QSqlRelationalTableModel>
+#include <QSqlRelationalDelegate>
 #endif // ALLINCLUDE_H

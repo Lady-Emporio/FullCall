@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     makeGui();
+
 }
 
 MainWindow::~MainWindow()

@@ -16,10 +16,12 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     Settings/settings.cpp \
     Settings/settings_gui.cpp \
-    Catalogs/Cars/carslist.cpp
+    Catalogs/Cars/carslist.cpp \
+    Catalogs/Cars/carschoose.cpp
 
 HEADERS  += mainwindow.h \
     Settings/settings.h \
     Settings/settings_gui.h \
     Catalogs/Cars/carslist.h \
-    allinclude.h
+    allinclude.h \
+    Catalogs/Cars/carschoose.h

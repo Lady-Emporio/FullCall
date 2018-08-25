@@ -5,7 +5,7 @@
 #include "Catalogs/Cars/carslist.h"
 #include <Settings/settings.h>
 #include <Settings/settings_gui.h>
-
+#include "Catalogs/Cars/carschoose.h"
 
 class MainWindow : public QMainWindow
 {
