@@ -1,0 +1,3 @@
+Settings:
+	if add new params in "SetDefaultParams" need add it in:
+		"Settings_gui" ->create Qlabel QLideEdit add QLideEdit in QMap
