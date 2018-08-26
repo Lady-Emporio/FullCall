@@ -176,6 +176,7 @@ void DealersList::makeGui()
     QMenuBar * mainMenu=new QMenuBar(this);
     mainMenu->addAction("Open",this,SLOT(action_Open()));
     mainMenu->addAction("Refresh",this,SLOT(action_refresh()));
+    mainMenu->addAction("addNew",this,SLOT(action_AddNew()));
     mainLayout->setMenuBar(mainMenu);
 
     model=new QSqlRelationalTableModel(mainLayout,Settings::S()->_db);
@@ -185,10 +186,17 @@ void DealersList::makeGui()
     tableView=new QTableView(this);
     tableView->setModel(model);
     tableView->setSortingEnabled(true);
+    QHBoxLayout *filterLayout=new QHBoxLayout(this);
+    filter=new QLineEdit("_code LIKE '%00%'",this);
+    QPushButton*filterButton=new QPushButton("filter",this);
+    filterLayout->addWidget(filter);
+    filterLayout->addWidget(filterButton);
+    mainLayout->addLayout(filterLayout);
     mainLayout->addWidget(tableView);
     QPushButton*commitButton=new QPushButton("Commit all",this);
     mainLayout->addWidget(commitButton);
     connect(commitButton, SIGNAL(clicked()), this, SLOT(action_CommitDealerList()));
+    connect(filterButton, SIGNAL(clicked()), this, SLOT(action_setFilter()));
 }
 
 DealersList::DealersList(QWidget *parent): QWidget(parent)
@@ -218,4 +226,14 @@ void DealersList::action_CommitDealerList()
         msgBox.exec();
     }
     model->select();
+}
+
+void DealersList::action_AddNew()
+{
+    model->insertRow(model->rowCount());
+}
+
+void DealersList::action_setFilter()
+{
+    model->setFilter(filter->text());
 }

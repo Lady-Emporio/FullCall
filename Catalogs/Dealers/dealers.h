@@ -10,6 +10,7 @@ class DealersList : public QWidget
     void MakeGui();
     QTableView *tableView;
     QSqlRelationalTableModel *model;
+    QLineEdit * filter;
     void makeGui();
 public:
     explicit DealersList(QWidget *parent = 0);
@@ -20,6 +21,8 @@ public slots:
     void action_Open();
     void action_refresh();
     void action_CommitDealerList();
+    void action_AddNew();
+    void action_setFilter();
 };
 
 
