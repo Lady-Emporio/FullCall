@@ -9,25 +9,26 @@ void BaseTable::makeGui()
 
     QHBoxLayout *filterLayout=new QHBoxLayout(this);
     filter=new QLineEdit(this);
-    QPushButton * setFilterButton=new QPushButton("Filter",this);
+    setFilterButton=new QPushButton("Filter",this);
     filterLayout->addWidget(filter);
     filterLayout->addWidget(setFilterButton);
     mainLayout->addLayout(filterLayout);
 
-    //model = new QSqlTableModel(this,Settings::S()->_db);
     if(modelTable!=nullptr){
         modelTable->setEditStrategy(QSqlTableModel::OnManualSubmit);
-        QTableView *tableView=new QTableView(this);
+        tableView=new QTableView(this);
+        tableView->setSortingEnabled(true);
         tableView->setModel(modelTable);
         mainLayout->addWidget(tableView);
     }else{
         modelRelational->setEditStrategy(QSqlTableModel::OnManualSubmit);
         QTableView *tableView=new QTableView(this);
         tableView->setModel(modelRelational);
+        tableView->setSortingEnabled(true);
         tableView->setItemDelegate(new QSqlRelationalDelegate(tableView));
         mainLayout->addWidget(tableView);
     }
-    QPushButton * commitButton=new QPushButton("commit",this);
+    commitButton=new QPushButton("commit",this);
     mainLayout->addWidget(commitButton);
     mainMenu->addAction("Add row",this,SLOT(action_addRow()));
     mainMenu->addAction("Refresh",this,SLOT(action_refreshModel()));
@@ -51,11 +52,18 @@ void BaseTable::action_addRow()
 
 void BaseTable::action_refreshModel()
 {
-    filter->setText("");
     if(modelTable!=nullptr){
-        modelTable->select();
+        if(!modelTable->select()){
+            QMessageBox msgBox;
+            msgBox.setText("Error with modelTable:"+modelTable->lastError().text());
+            msgBox.exec();
+        }
     }else{
-        modelRelational->select();
+        if(!modelRelational->select()){
+            QMessageBox msgBox;
+            msgBox.setText("Error with modelRelational"+modelRelational->lastError().text());
+            msgBox.exec();
+        }
     }
 
 }
@@ -80,10 +88,32 @@ void BaseTable::action_commitModel()
 
 void BaseTable::action_filter()
 {
-    filter->setText("");
     if(modelTable!=nullptr){
+        modelTable->setFilter(filter->text());
         modelTable->select();
     }else{
+        modelRelational->setFilter(filter->text());
         modelRelational->select();
+    }
+}
+
+SubTable::SubTable(QWidget *parent, int indexColumnDate):BaseTable(parent),indexColumnDate(indexColumnDate)
+{
+
+}
+
+void SubTable::action_addRow()
+{
+    QString time=QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm:ss");
+    if(modelTable!=nullptr){
+        int newRow=modelTable->rowCount();
+        modelTable->insertRow(newRow);
+        modelTable->setData(modelTable->index(newRow,indexColumnDate),time);
+        modelTable->setData(modelTable->index(newRow,indexParent),parent_code);
+    }else{
+        int newRow=modelRelational->rowCount();
+        modelRelational->insertRow(newRow);
+        modelRelational->setData(modelRelational->index(newRow,indexColumnDate),time);
+        modelTable->setData(modelTable->index(newRow,indexParent),parent_code);
     }
 }

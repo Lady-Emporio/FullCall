@@ -1,9 +1,10 @@
 #ifndef MANAGERS_H
 #define MANAGERS_H
 
-#include <QWidget>
+#include "Catalogs/BaseTable/basetable.h"
+#include "allinclude.h"
 
-class Managers : public QWidget
+class Managers : public BaseTable
 {
     Q_OBJECT
 public:

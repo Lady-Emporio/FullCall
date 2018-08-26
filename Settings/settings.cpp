@@ -234,3 +234,9 @@ void Settings::GetErrorMessage(QSqlQuery *query, QString transaction)
     msgBox.setText(error);
     msgBox.exec();
 }
+
+QString Settings::shieldInection(QString text)
+{
+    text=text.replace(";","");
+    return text;
+}

@@ -19,6 +19,7 @@ public:
     static QString get(QString par);
     static void set(QMap<QString,QString>par);
     static void GetErrorMessage(QSqlQuery *query=nullptr,QString transaction="");
+    static QString shieldInection(QString text);
 };
 
 #endif // SETTINGS_H

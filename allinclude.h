@@ -29,4 +29,7 @@
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
 #include <QSqlQueryModel>
+#include <QModelIndex>
+#include <QTextEdit>
+#include <QDateTime>
 #endif // ALLINCLUDE_H

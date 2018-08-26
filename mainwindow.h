@@ -8,6 +8,8 @@
 #include "Catalogs/Cars/carschoose.h"
 #include "Catalogs/Colors/colors.h"
 #include "Catalogs/Cars_colors/carscolors.h"
+#include "Catalogs/Managers/managers.h"
+#include "Catalogs/Dealers/dealers.h"
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -21,6 +23,9 @@ private slots:
     void action_CarsList();
     void action_ColorsList();
     void action_CarColor();
+    void action_ManagersList();
+    void action_DealersList();
+    void get_sig_OpenDealer(QString code);
 };
 
 #endif // MAINWINDOW_H
