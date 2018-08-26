@@ -8,19 +8,19 @@
 #include <QJsonObject>
 #include <QSqlQuery>
 #include <QSqlError>
-
+#include <QMouseEvent>
 #include <QLineEdit>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QFileDialog>
-
+#include <QDataWidgetMapper>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QListWidget>
 #include <QMenuBar>
-
+#include <QComboBox>
 #include <QMainWindow>
 #include <QMdiArea>
 #include <QMdiSubWindow>

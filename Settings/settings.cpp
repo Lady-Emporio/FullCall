@@ -75,10 +75,25 @@ void Settings::createTables()
       " _workList TEXT, "
       " _client TEXT, "
       " _model TEXT REFERENCES cars(_code) ON UPDATE CASCADE NOT NULL, "
-      " _colors TEXT, "
-      " _options TEXT, "
       " _mark text CHECK (_mark=0 or _mark=1), "
+      " _status text CHECK(_status='' or _status='Search!!!' or _status='Cancel' or _status='Found' or _status='Wait'),"
       " _presentation text "
+      " ); "
+    <<" CREATE TABLE IF NOT EXISTS orders_color( "
+      " _id INTEGER PRIMARY KEY NOT NULL, "
+      " _color INTEGER REFERENCES colors(_id) ON UPDATE CASCADE NOT NULL, "
+      " _parent integer REFERENCES orders(_id) ON UPDATE CASCADE NOT NULL "
+      " ); "
+    <<" CREATE TABLE IF NOT EXISTS orders_option( "
+      " _id INTEGER PRIMARY KEY NOT NULL, "
+      " _option TEXT NOT NULL,"
+      " _parent integer REFERENCES orders(_id) ON UPDATE CASCADE NOT NULL "
+      " ); "
+    <<" CREATE TABLE IF NOT EXISTS order_timeline( "
+      "_id INTEGER PRIMARY KEY NOT NULL, "
+      " _date TEXT, "
+      " _comment TEXT,"
+      " _parent integer REFERENCES orders(_id) ON UPDATE CASCADE NOT NULL "
       " ); "
     <<" CREATE TRIGGER IF NOT EXISTS orders_presentation_inser AFTER INSERT ON orders "
       " BEGIN  "
@@ -117,6 +132,7 @@ void Settings::createTables()
             return;
         }
     }
+    _db.commit();
 }
 
 void Settings::readParamsFromJson()

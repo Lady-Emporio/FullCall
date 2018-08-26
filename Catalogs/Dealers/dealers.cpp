@@ -163,6 +163,7 @@ void Dealers::action_WriteInDB()
         msgBox.exec();
         return;
     }
+    Settings::S()->_db.commit();
     code=codeEdit->text();
     email->parent_code=code;
     full_call->parent_code=code;

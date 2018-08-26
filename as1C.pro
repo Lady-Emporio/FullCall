@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     Catalogs/Cars_colors/carscolors.cpp \
     Catalogs/BaseTable/basetable.cpp \
     Catalogs/Managers/managers.cpp \
-    Catalogs/Dealers/dealers.cpp
+    Catalogs/Dealers/dealers.cpp \
+    Doc/Order/orders.cpp
 
 HEADERS  += mainwindow.h \
     Settings/settings.h \
@@ -34,4 +35,5 @@ HEADERS  += mainwindow.h \
     Catalogs/Cars_colors/carscolors.h \
     Catalogs/BaseTable/basetable.h \
     Catalogs/Managers/managers.h \
-    Catalogs/Dealers/dealers.h
+    Catalogs/Dealers/dealers.h \
+    Doc/Order/orders.h
