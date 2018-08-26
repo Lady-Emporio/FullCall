@@ -14,7 +14,7 @@ void CarsChoose::makeGui()
     model = new QSqlRelationalTableModel(this,Settings::S()->_db);
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->setTable("cars");
-    model->setRelation(2, QSqlRelation("cars", "_code", "_name"));
+    //model->setRelation(2, QSqlRelation("cars", "_code", "_name"));
     model->select();
     QTableView *tableView=new QTableView(this);
     tableView->setModel(model);

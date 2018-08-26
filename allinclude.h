@@ -28,4 +28,5 @@
 #include <QTableView>
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
+#include <QSqlQueryModel>
 #endif // ALLINCLUDE_H

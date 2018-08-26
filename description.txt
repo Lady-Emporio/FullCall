@@ -3,3 +3,8 @@ Settings:
 		"Settings_gui" ->create Qlabel QLideEdit add QLideEdit in QMap
 Tables:
 	if edit sql tables need in "Settings::createTables()" edit and in ListForm in model->setTable.
+BaseTable- default function and gui for catalogs. Have "QSqlTableModel *modelTable" and "QSqlRelationalTableModel *modelRelational"
+	need one set =nullptr. And dont use. If need QSqlTableModel then modelRelational=nullptr. Else need QSqlRelationalTableModel then modelTable=nullptr
+	1-in chilred class set modelRelational or modelTable==nullptr/
+	2-makeGui();
+	3-action_refreshModel();
