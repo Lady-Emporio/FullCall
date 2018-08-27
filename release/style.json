@@ -1,0 +1,7 @@
+{
+    "app/image": "./image.png",
+    "font_size": "15",
+    "path/to/db": "./main.sqlite",
+    "path_db": "E:/QtProject/FullCall/build-as1C-Desktop_Qt_5_6_3_MinGW_32bit-Debug/main.sqlite",
+    "path_to_image": "./Internet Explorer_32.png"
+}
