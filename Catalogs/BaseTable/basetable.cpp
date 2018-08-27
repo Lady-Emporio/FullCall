@@ -136,7 +136,6 @@ void SubTableOnlyParent::action_addRow()
     }else{
         int newRow=modelRelational->rowCount();
         modelRelational->insertRow(newRow);
-        //qDebug()<<indexParent <<parent_code<<newRow;
         modelRelational->setData(modelRelational->index(newRow,indexParent),parent_code);
     }
 }

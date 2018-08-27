@@ -194,13 +194,12 @@ void MainWindow::action_OrdersList()
     ordersList->modelTable=nullptr;
     ordersList->modelRelational=new QSqlRelationalTableModel(this,Settings::S()->_db);
     ordersList->modelRelational->setTable("orders");
-    ordersList->modelRelational->setRelation(0, QSqlRelation("orders", "_id", "_presentation"));
+    QString defaultFilter="_status='Search!!!'";
+    ordersList->modelRelational->setFilter(defaultFilter);
     ordersList->makeGui();
     ordersList->AfterMakeGui();
+    ordersList->filter->setText(defaultFilter);
     ordersList->action_refreshModel();
-    ordersList->tableView->setColumnWidth(0,400);
-
-    //ordersList->modelRelational->setFilter("_status='Search!!!'");
 
     subWindow->setWidget(ordersList);
     mdiArea->addSubWindow(subWindow);
@@ -233,7 +232,7 @@ void MainWindow::get_sig_NewOrder()
     subWindow->show();
 
     connect(newOrder->modelRec, SIGNAL(sig_chooseCar(QString)), this, SLOT(get_sig_chooseCar(QString)));
-    connect(this, SIGNAL(sig_chooseCar(QString,QString)), newOrder, SLOT(get_sig_chooseCar(QString,QString)));
+    connect(this, SIGNAL(sig_chooseCar(QString,QString,QString)), newOrder, SLOT(get_sig_chooseCar(QString,QString,QString)));
     connect(newOrder, SIGNAL(sig_closeNewOrderAfterCommit()), this, SLOT(get_sig_closeNewOrderAfterCommit()));
 
 }
@@ -257,19 +256,30 @@ void MainWindow::get_sig_chooseCar(QString senderName)
     subWindow->setAttribute(Qt::WA_DeleteOnClose);
     subWindow->show();
 
-    connect(carChoose, SIGNAL(sig_chooseCode(QString,QString)), this, SLOT(get_sig_fromChooseToOrder(QString,QString)));
+    connect(carChoose, SIGNAL(sig_chooseCode(QString,QString,QString)), this, SLOT(get_sig_fromChooseToOrder(QString,QString,QString)));
 }
 
-void MainWindow::get_sig_fromChooseToOrder(QString senderName,QString code)
+void MainWindow::get_sig_fromChooseToOrder(QString senderName,QString code,QString carName)
 {
     QString title="ChooseCar:"+senderName;
+    QMdiSubWindow * heIsSender=nullptr;
     QList<QMdiSubWindow *>	allSub=mdiArea->subWindowList();
     for(auto x:allSub){
         if(x->windowTitle()==title){
             x->close();
+            continue;
         };
+        if(x->widget()->objectName()=="Orders"){
+            Orders *order=(Orders *)x->widget();
+            if(order->modelRec->objectName()==senderName){
+                heIsSender=x;
+            }
+        }
     };
-    emit sig_chooseCar(senderName,code);
+    emit sig_chooseCar(senderName,code,carName);
+    if(heIsSender!=nullptr){
+        this->mdiArea->setActiveSubWindow(heIsSender);
+    }
 }
 
 void MainWindow::get_sig_closeNewOrderAfterCommit()
@@ -279,6 +289,16 @@ void MainWindow::get_sig_closeNewOrderAfterCommit()
     for(auto x:allSub){
         if(x->windowTitle()==title){
             x->close();
+        };
+    };
+    QString titleList="Orders list";
+    for(auto x:allSub){
+        if(x->windowTitle()==titleList){
+            mdiArea->setActiveSubWindow(x);
+            x->move(0,0);
+            OpenSomeThing *ordersList=(OpenSomeThing *)x->widget();
+            ordersList->action_refreshModel();
+            return;
         };
     };
 }
@@ -296,12 +316,12 @@ void MainWindow::get_sig_OpenOrder(QString code)
     };
     QMdiSubWindow *subWindow = new QMdiSubWindow(mdiArea);
     subWindow->setWindowTitle(title);
-    Orders *newOrder=new Orders(subWindow,code);
-    subWindow->setWidget(newOrder);
+    Orders *order=new Orders(subWindow,code);
+    subWindow->setWidget(order);
     mdiArea->addSubWindow(subWindow);
     subWindow->setAttribute(Qt::WA_DeleteOnClose);
     subWindow->show();
 
-    connect(newOrder->modelRec, SIGNAL(sig_chooseCar(QString)), this, SLOT(get_sig_chooseCar(QString)));
-    connect(this, SIGNAL(sig_chooseCar(QString,QString)), newOrder, SLOT(get_sig_chooseCar(QString,QString)));
+    connect(order->modelRec, SIGNAL(sig_chooseCar(QString)), this, SLOT(get_sig_chooseCar(QString)));
+    connect(this, SIGNAL(sig_chooseCar(QString,QString,QString)), order, SLOT(get_sig_chooseCar(QString,QString,QString)));
 }

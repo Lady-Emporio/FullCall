@@ -40,6 +40,8 @@ class Orders : public QWidget
     QLabel * optionLabel;
     QLabel * colorLabel;
     void makeExistObject();
+    //QString modelChooseIndex;
+    QMap<QString,QString>modelAttr;
 public:
     MyLabelChoose *modelRec;
     explicit Orders(QWidget *parent, QString code);
@@ -48,7 +50,7 @@ signals:
     void sig_closeNewOrderAfterCommit();
 public slots:
     void action_CreateNewOrder();
-    void get_sig_chooseCar(QString toObjectName,QString code);
+    void get_sig_chooseCar(QString toObjectName,QString code,QString carName);
     void action_refreshALl();
     void action_UpdateOrder();
 };

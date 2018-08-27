@@ -21,7 +21,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 signals:
-    void sig_chooseCar(QString toObjectName,QString code);
+    void sig_chooseCar(QString toObjectName,QString code,QString carName);
 private slots:
     void action_Settings();
     void action_CarsList();
@@ -33,7 +33,7 @@ private slots:
     void action_OrdersList();
     void get_sig_NewOrder();
     void get_sig_chooseCar(QString senderName);
-    void get_sig_fromChooseToOrder(QString senderName, QString code);
+    void get_sig_fromChooseToOrder(QString senderName, QString code,QString carName);
     void get_sig_closeNewOrderAfterCommit();
     void get_sig_OpenOrder(QString code);
 };

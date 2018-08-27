@@ -115,6 +115,8 @@ void Dealers::fillAll()
     activePhoneEdit->setText( query.value("_activePhone").toString());
     distryPhoneEdit->setText( query.value("_distryPhone").toString());
     commentEdit->setPlainText( query.value("_comment").toString());
+    commentEdit->setFixedHeight(100);
+    //commentEdit->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     email->modelTable->setFilter("_parent='"+Settings::shieldInection(code)+"'");
     full_call->modelTable->setFilter("_parent='"+Settings::shieldInection(code)+"'");
     email->modelTable->select();

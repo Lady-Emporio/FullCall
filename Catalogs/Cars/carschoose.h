@@ -29,7 +29,7 @@ public:
 public slots:
     void action_backToFilters();
 signals:
-    void sig_chooseCode(QString sender_name,QString code);
+    void sig_chooseCode(QString sender_name,QString code,QString nameModel);
 };
 
 #endif // CARSCHOOSE_H

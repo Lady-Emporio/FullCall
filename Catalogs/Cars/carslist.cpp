@@ -51,7 +51,9 @@ void CarsList::makeGui()
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->setTable("cars");
     QTableView *tableView=new QTableView(this);
+    //tableView->setItemDelegate(new QSqlRelationalDelegate(tableView));
     tableView->setModel(model);
+    tableView->setSortingEnabled(true);
     mainLayout->addWidget(tableView);
 
     QPushButton * commitButton=new QPushButton("commit",this);

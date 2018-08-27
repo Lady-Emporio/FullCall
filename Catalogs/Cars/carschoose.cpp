@@ -40,6 +40,7 @@ void CarsChoose::makeGui()
     model->select();
     TableChoose *tableView=new TableChoose(this,senderName);
     tableView->setModel(model);
+    tableView->setColumnWidth(2,300);
     mainLayout->addWidget(tableView);
     model->setFilter(defaultFilter);
 
@@ -55,15 +56,16 @@ void TableChoose::mouseDoubleClickEvent(QMouseEvent *event)
         QString toParent=model->index(row,0).data().toString();
         QString filter="_parentCode='"+toParent+"'";
         if(model->filter()!=filter){
-            if(model->index(row,3).data().toInt()==1){
+            if(model->index(row,4).data().toInt()==1){
                 model->setFilter(filter);
                 CarsChoose*parentChoose=(CarsChoose*)this->parentWidget();
                 parentChoose->forFilter->setText(filter);
                 parentChoose->historyFilters.append(filter);
             }else{
-                QString chooseCode=model->index(row,0).data().toString();
+                QString chooseIndex=model->index(row,0).data().toString();
+                QString chooseName=model->index(row,2).data().toString();
                 CarsChoose*parentChoose=(CarsChoose*)this->parentWidget();
-                emit parentChoose->sig_chooseCode(senderName,chooseCode);
+                emit parentChoose->sig_chooseCode(senderName,chooseIndex,chooseName);
             }
         }
     }

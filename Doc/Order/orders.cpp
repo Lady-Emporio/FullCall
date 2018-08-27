@@ -84,7 +84,9 @@ void Orders::makeGui()
     leftLayout->addLayout(workListLayout);
 
     QHBoxLayout *modelLayout=new QHBoxLayout(this);
-    modelLayout->addWidget(new QLabel("Car",this));
+    QLabel *carLabel=new QLabel("Car",this);
+    carLabel->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    modelLayout->addWidget(carLabel);
     modelLayout->addWidget(modelRec);
     leftLayout->addLayout(modelLayout);
 
@@ -125,6 +127,7 @@ void Orders::makeExistObject()
 
 Orders::Orders(QWidget *parent,QString code) : QWidget(parent),code(code)
 {
+    this->setObjectName("Orders");
     makeGui();
     if(code==""){
         makeGuiNewObject();
@@ -144,8 +147,11 @@ void Orders::action_CreateNewOrder()
     query.bindValue(":_manager",managerRec->currentText());
     query.bindValue(":_workList",workListRec->text());
     query.bindValue(":_client",clientRec->text());
-    query.bindValue(":_model",modelRec->text());
+    //query.bindValue(":_model",modelChooseIndex);
+    query.bindValue(":_model",modelAttr.value("modelChooseIndex"));
+
     query.bindValue(":_status",statusRec->currentText());
+    qDebug()<<query.executedQuery()<<query.lastQuery();
     if(!query.exec()){
         QMessageBox msgBox;
         msgBox.setText(Settings::S()->_db.lastError().text()+" |\n "+query.lastError().text()+" |\n "+query.lastQuery());
@@ -156,17 +162,32 @@ void Orders::action_CreateNewOrder()
     emit sig_closeNewOrderAfterCommit();
 }
 
-void Orders::get_sig_chooseCar(QString toObjectName, QString code)
+void Orders::get_sig_chooseCar(QString toObjectName, QString code,QString carName)
 {
     if(this->modelRec->objectName()==toObjectName){
-        this->modelRec->setText(code);
+        this->modelRec->setText(carName);
+        //modelChooseIndex=code;
+        modelAttr.insert("modelChooseIndex",code);
+        action_refreshALl();
     }
 }
 
 void Orders::action_refreshALl()
 {
     QSqlQuery query(Settings::S()->_db);
-    query.prepare("SELECT _id,_date,_manager,_workList,_client,_model,_status,_presentation FROM orders WHERE _id=:code");
+    query.prepare("SELECT cars._name as c_name, "
+                  " cars._parentCode as _parentCode,"
+                  "orders._id as _id,"
+                  "orders._date as _date,"
+                  "orders._manager as _manager,"
+                  "orders._workList as _workList,"
+                  "orders._client as _client,"
+                  "orders._model as _model,"
+                  "orders._status as _status,"
+                  "orders._presentation FROM orders "
+                  " LEFT JOIN cars  ON "
+                  " orders._model = cars._id "
+                  " WHERE orders._id=:code");
     query.bindValue(":code",code);
     if(!query.exec()){
         QMessageBox msgBox;
@@ -180,7 +201,10 @@ void Orders::action_refreshALl()
     managerRec->setCurrentText(query.value("_manager").toString());
     workListRec->setText(query.value("_workList").toString());
     clientRec->setText(query.value("_client").toString());
-    modelRec->setText(query.value("_model").toString());
+    //modelChooseIndex=query.value("_model").toString();
+    modelAttr["modelChooseIndex"]=query.value("_model").toString();
+    modelAttr["_parentCode"]=query.value("_parentCode").toString();
+    modelRec->setText(query.value("c_name").toString());
     statusRec->setCurrentText(query.value("_status").toString());
     presentationRec->setText(query.value("_presentation").toString());
 
@@ -197,7 +221,8 @@ void Orders::action_UpdateOrder()
     query.bindValue(":_manager",managerRec->currentText());
     query.bindValue(":_workList",workListRec->text());
     query.bindValue(":_client",clientRec->text());
-    query.bindValue(":_model",modelRec->text());
+    //query.bindValue(":_model",modelChooseIndex);
+    query.bindValue(":_model",modelAttr["modelChooseIndex"]);
     query.bindValue(":_status",statusRec->currentText());
     query.bindValue(":id",code);
     if(!query.exec()){
