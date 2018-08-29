@@ -13,8 +13,8 @@ QCompleter - к автодополнение ввода.
 ПроксиМодель QSortFilterProxyModel proxyModel;
 Tables:
 	cars:
-		Решено 1-убрать _code TEXT PRIMARY KEY NOT NULL. У логанов и сандеро один и тот же код. Только родитель разный.
-		2-добавить уникальный индекс по коду и родителю.
+		РЕШЕНО 1-убрать _code TEXT PRIMARY KEY NOT NULL. У логанов и сандеро один и тот же код. Только родитель разный.
+		РЕШЕНО 2-добавить уникальный индекс по коду и родителю.
 
 Error:
 	Cars list:
@@ -27,7 +27,8 @@ Error:
 		ОТМЕНЕНО-пусть будет. 5-delegate позволяющий редактировать cars_list мешает. Убрать вообще редактирование.
 	cars choose:
 		РЕШЕНО 1-_name занимает копеечное место. Постоянно надо его раздвигать.
-		РЕШЕНО 2-после выбора открывается другое окно. Как-то неудобно вообще. В форме нового выбрал авто и открывается форма листа. А новый в каком-то углу оказывается.
+		РЕШЕНО 2-после выбора открывается другое окно. Как-то неудобно вообще. В форме нового выбрал авто и открывается форма листа. 
+		А новый в каком-то углу оказывается.
 	order new:
 		РЕШЕНО 1-новый на весь экран ужас, но ладно. Там проблема именно с QLabel car("Car"). Она не должна увеличиватся при увеличении экрана. Это просто надпись.
 		РЕШЕНО 2- не работает отбор. По умолчанию ставить отбор на _status="Search!!!"
@@ -35,3 +36,80 @@ Error:
 		ДОДЕЛАТЬ - мелоч для gui. 1-привязать выбор цвета к QLaber отвечающей за модель. Используется не та таблица.
 	dealer:
 		РЕШЕНО 1-меньше коммент больше таблицы. Даже в 1С в пол окна 9 строчек видно, а во весь экран 13, когда в qt максимум 6. Надо до 20 хотя бы увеличить.
+
+28.08.2018:
+Errors:
+	Settings:
+		РЕШЕНО 1-настройки не сохраняются в файл. void Settings::set(QMap<QString, QString> par) устанавливает значения, 
+		но не сохраняет их в файл. нет вызова: writeParamsToJson(); В коммит запихнуть writeParamsToJson();
+	App:
+		РЕШЕНО 1-a.setWindowIcon(QIcon(Settings::get("app/image"))); нет иконки приложения.
+	Tables:
+		РЕШЕНО INSERT OR IGNORE 1-не помешало бы "INSERT INTO cars(_id,_code,_name,_parentCode,_folder) VALUES "
+						 "(0,'root','root',0,1);" по умолчанию пусть будет root от которого идут все группы. Не создавать же его вручную каждый раз.
+		РЕШЕНО 2- <<"CREATE UNIQUE INDEX IF NOT EXISTS cars_index ON cars(_code ,_name,_parentCode  );"
+Критические:
+	РЕШЕНО -пытался из бд тащить данные до создания.1-в ордер не выбирается авто. Нет выбора - нет сохранения.
+	РЕШЕНО 1.1-создал через браузер, авто отображается в созданном по имени, но и в открытом не выбирается.
+	Не обязательно: 3- нет удаления строки. Для базеТабле добавить удаление. Без него некоторые коммиты сделать нельзя.
+	
+Действия дальше:
+	РЕШЕНО Передать таблицу phone:
+		" CREATE TABLE IF NOT EXISTS phone( "
+		" _id INTEGER PRIMARY KEY NOT NULL, "
+		" _orders INTEGER REFERENCES orders(_id ) ON UPDATE CASCADE NOT NULL, "
+		" _f_status text  CHECK(_f_status in ('','Search!!!','Cancel','Found','Wait') ) );"
+	
+	РЕШЕНО в orders создать кнопку: "Create new phone":
+		без сигналов и прочего, обратиться в напрямую к главному окну.
+			0-добавить "root" orders.
+			1-settings добавить void * MW=MainWindow;
+			2-в МW добавить функцию: openPhone(QString code,QString parent). 
+				phone может открыться напрямую, тогда parent="root". Кнопочная функция вызовет эту.
+				phone может открыться через orders тогда создается parent=parent. ордер напрямую через настройки вызовет её.
+		
+	в документы добавить класс Phone:
+	id,	f_status,
+	orders (как представление)
+	При открытии существующего видна и субтаблица,
+	_id _phone, - скрыть, а phone автоматически проставить.
+    _vinCar _code_dealer,_blockCar,_dateCar,_modelCar,_optionCar, _colorCar,DEALER_ACTIVEPHONE ,DEALER_NAME,LASTTALK,_dateTalk ,_colorTalk,_commentTalk
+		LASTTALK-своим запросом вытащить.
+		DEALER_ACTIVEPHONE-своим запросом
+		DEALER_NAME-своим запросом.
+	Изменить таблицу calls:
+    <<" CREATE TABLE IF NOT EXISTS calls( "
+      " _id INTEGER PRIMARY KEY NOT NULL, "
+      " _phone INTEGER REFERENCES phone(_id) ON UPDATE CASCADE NOT NULL, "
+      " _vinCar TEXT, "
+      " _code_dealer TEXT, "
+      " _blockCar TEXT, "
+      " _dateCar TEXT, "
+      " _modelCar TEXT, "
+      " _optionCar TEXT, "
+      " _colorCar TEXT, "
+      " _dateTalk TEXT, "
+      " _colorTalk TEXT CHECK(_colorTalk in ('','Красный','Зеленый','Синий','Коричневый','Желтый','Фиолетовый') ), "
+      " _commentTalk TEXT "
+      " ); ";
+	
+	Запрос будет приблизительно:
+		SELECT
+		(select ifnull(datetime(_date),'2000-01-01')
+			 from full_call  
+			where _parent=calls._code_dealer
+			order by datetime(_date) desc
+			limit 1) as _dateLast,
+	 calls._id,calls._vinCar,dealers._name,dealers._activePhone,calls._colorTalk FROM calls
+	left join dealers on
+	calls._code_dealer=dealers._code
+	where
+	calls._phone=1;
+	
+	Чтобы вытащить последний звонк, надо написать приблизительно такой запрос.
+	ЧЕТКО СТАВИТЬ ДАТЫ: "YYYY-MM-DD HH:MM:SS" добавить в настройки возврат текущего datetime в таком формате.
+	select ifnull(datetime(_date),'2000-01-01'),_id,_parent
+	 from full_call  
+	where _parent='6771'
+	order by datetime(_date) desc
+	limit 1;

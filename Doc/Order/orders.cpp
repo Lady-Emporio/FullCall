@@ -120,6 +120,7 @@ void Orders::makeExistObject()
 {
     mainMenu->addAction("Update",this,SLOT(action_UpdateOrder()));
     mainMenu->addAction("Refresh",this,SLOT(action_refreshALl()));
+    mainMenu->addAction("Phones",this,SLOT(action_Phones()));
     colorsRec->modelRelational->setFilter("_parent='"+code +"'");
     optionsRec->modelTable->setFilter("_parent='"+code +"'");
     timeline->modelTable->setFilter("_parent='"+code +"'");
@@ -167,8 +168,8 @@ void Orders::get_sig_chooseCar(QString toObjectName, QString code,QString carNam
     if(this->modelRec->objectName()==toObjectName){
         this->modelRec->setText(carName);
         //modelChooseIndex=code;
+
         modelAttr.insert("modelChooseIndex",code);
-        action_refreshALl();
     }
 }
 
@@ -184,7 +185,8 @@ void Orders::action_refreshALl()
                   "orders._client as _client,"
                   "orders._model as _model,"
                   "orders._status as _status,"
-                  "orders._presentation FROM orders "
+                  "orders._presentation as _presentation"
+                  " FROM orders "
                   " LEFT JOIN cars  ON "
                   " orders._model = cars._id "
                   " WHERE orders._id=:code");
@@ -196,12 +198,12 @@ void Orders::action_refreshALl()
         return;
     }
     query.next();
+
     idRec->setText(query.value("_id").toString());
     dateRec->setText(query.value("_date").toString());
     managerRec->setCurrentText(query.value("_manager").toString());
     workListRec->setText(query.value("_workList").toString());
     clientRec->setText(query.value("_client").toString());
-    //modelChooseIndex=query.value("_model").toString();
     modelAttr["modelChooseIndex"]=query.value("_model").toString();
     modelAttr["_parentCode"]=query.value("_parentCode").toString();
     modelRec->setText(query.value("c_name").toString());

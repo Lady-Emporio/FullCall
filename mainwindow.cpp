@@ -21,6 +21,10 @@ void MainWindow::makeGui()
     catalogs->addAction("Model-colors",this,SLOT(action_CarColor()));
     catalogs->addAction("Managers",this,SLOT(action_ManagersList()));
     catalogs->addAction("Dealers",this,SLOT(action_DealersList()));
+
+    QMenu *documents=new QMenu("Documents",mainMenu);
+    mainMenu->addMenu(documents);
+    documents->addAction("Phones",this,SLOT(action_PhonesList()));
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -325,3 +329,67 @@ void MainWindow::get_sig_OpenOrder(QString code)
     connect(order->modelRec, SIGNAL(sig_chooseCar(QString)), this, SLOT(get_sig_chooseCar(QString)));
     connect(this, SIGNAL(sig_chooseCar(QString,QString,QString)), order, SLOT(get_sig_chooseCar(QString,QString,QString)));
 }
+
+void MainWindow::action_PhonesList()
+{
+    open_PhonesList();
+}
+
+void Orders::action_Phones()
+{
+    Settings::S()->MW->open_PhonesList(code);
+}
+
+void MainWindow::open_PhonesList(QString parent)
+{
+    QString title="Phone list";
+    if(parent!=""){
+        title=="Phone list:"+parent;
+    }
+
+    QList<QMdiSubWindow *>	allSub=mdiArea->subWindowList();
+    for(auto x:allSub){
+        if(x->windowTitle()==title){
+            mdiArea->setActiveSubWindow(x);
+            x->move(0,0);
+            return;
+        };
+    };
+    QMdiSubWindow *subWindow = new QMdiSubWindow(mdiArea);
+    subWindow->setWindowTitle(title);
+    PhonesList *phone=new PhonesList(subWindow);
+    if(parent!=""){
+        phone->orderParent=parent.toInt();
+        phone->modelRelational->setFilter("_orders="+parent);
+        phone->hideFilter();
+    }
+
+    subWindow->setWidget(phone);
+    mdiArea->addSubWindow(subWindow);
+    subWindow->setAttribute(Qt::WA_DeleteOnClose);
+    subWindow->show();
+}
+
+void PhonesList::action_addRow()
+{
+    int parent=this->orderParent;
+    MainWindow * mw=Settings::S()->MW;
+    QString title="Phone:"+QString("").setNum(parent);
+    QList<QMdiSubWindow *>	allSub=mw->mdiArea->subWindowList();
+    for(auto x:allSub){
+        if(x->windowTitle()==title){
+            mw->mdiArea->setActiveSubWindow(x);
+            x->move(0,0);
+            return;
+        };
+    };
+    QMdiSubWindow *subWindow = new QMdiSubWindow(mw->mdiArea);
+    subWindow->setWindowTitle(title);
+    Phone *phone=new Phone(subWindow,parent);
+    subWindow->setWidget(phone);
+    mw->mdiArea->addSubWindow(subWindow);
+    subWindow->setAttribute(Qt::WA_DeleteOnClose);
+    subWindow->show();
+}
+
+

@@ -53,6 +53,7 @@ public slots:
     void get_sig_chooseCar(QString toObjectName,QString code,QString carName);
     void action_refreshALl();
     void action_UpdateOrder();
+    void action_Phones();
 };
 
 #endif // ORDERS_H

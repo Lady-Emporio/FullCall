@@ -32,4 +32,5 @@
 #include <QModelIndex>
 #include <QTextEdit>
 #include <QDateTime>
+#include <QSqlRecord>
 #endif // ALLINCLUDE_H

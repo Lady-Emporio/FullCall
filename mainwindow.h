@@ -11,13 +11,14 @@
 #include "Catalogs/Managers/managers.h"
 #include "Catalogs/Dealers/dealers.h"
 #include "Doc/Order/orders.h"
-
+#include "Doc/Phone/phoneslist.h"
+#include "Doc/Phone/phone.h"
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QMdiArea * mdiArea;
     void makeGui();
 public:
+    QMdiArea * mdiArea;
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 signals:
@@ -36,6 +37,9 @@ private slots:
     void get_sig_fromChooseToOrder(QString senderName, QString code,QString carName);
     void get_sig_closeNewOrderAfterCommit();
     void get_sig_OpenOrder(QString code);
+    void action_PhonesList();
+public slots:
+    void open_PhonesList(QString parent="");
 };
 
 #endif // MAINWINDOW_H

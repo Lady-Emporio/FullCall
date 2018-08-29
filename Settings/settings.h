@@ -2,6 +2,7 @@
 #define SETTINGS_H
 
 #include "allinclude.h"
+class MainWindow;
 class Settings
 {
     QMap<QString,QString>parameters;
@@ -13,6 +14,7 @@ class Settings
     void insertParamsInJson(QString key, QString value);
     void SetDefaultParams();
 public:
+    MainWindow * MW;
     QSqlDatabase _db;
     static QStringList keys();
     static Settings *S();

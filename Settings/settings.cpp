@@ -33,6 +33,9 @@ void Settings::createTables()
           " _parentCode TEXT REFERENCES cars(_id) ON UPDATE CASCADE,"
           " _folder integer check( _folder=1 or _folder=0) NOT NULL"
           " ); "
+       <<"CREATE UNIQUE INDEX IF NOT EXISTS cars_index ON cars(_code,_name,_parentCode);"
+       <<"INSERT OR IGNORE INTO cars(_id,_code,_name,_parentCode,_folder) VALUES "
+         "(0,'root','root',0,1);"
        <<"CREATE TABLE IF NOT EXISTS colors( "
          "   _id integer PRIMARY KEY NOT NULL, "
          "  _code text NOT NULL, "
@@ -69,6 +72,7 @@ void Settings::createTables()
       " _code TEXT PRIMARY KEY NOT NULL, "
       " _fullName TEXT "
       " ); "
+     <<"INSERT OR IGNORE INTO managers(_code,_fullName) VALUES ('root','root');"
     <<" CREATE TABLE IF NOT EXISTS orders( "
       " _id INTEGER PRIMARY KEY NOT NULL, "
       " _date TEXT, "
@@ -104,12 +108,10 @@ void Settings::createTables()
       " BEGIN  "
       "     UPDATE orders SET _presentation=NEW._manager||' for '||NEW._client||' in '||NEW._workList; "
       " END; "
-
     <<" CREATE TABLE IF NOT EXISTS phone( "
       " _id INTEGER PRIMARY KEY NOT NULL, "
-      " _orders INTEGER REFERENCES managers(_code) ON UPDATE CASCADE NOT NULL, "
-      " f_status INTEGER "
-      " ); "
+      " _orders INTEGER REFERENCES orders(_id ) ON UPDATE CASCADE NOT NULL, "
+      " _f_status TEXT CHECK(_f_status in ('Search!!!','Cancel','Found','Wait') ) );"
     <<" CREATE TABLE IF NOT EXISTS calls( "
       " _id INTEGER PRIMARY KEY NOT NULL, "
       " _phone INTEGER REFERENCES phone(_id) ON UPDATE CASCADE NOT NULL, "
@@ -121,9 +123,11 @@ void Settings::createTables()
       " _optionCar TEXT, "
       " _colorCar TEXT, "
       " _dateTalk TEXT, "
-      " _colorTalk TEXT, "
+      " _colorTalk TEXT CHECK(_colorTalk in ('','Красный','Зеленый','Синий','Коричневый','Желтый','Фиолетовый') ), "
       " _commentTalk TEXT "
-      " ); ";
+      " ); "
+    ;
+
     for(QString sql:sqls){
         QSqlQuery query(_db);
         if(!query.exec(sql)){
@@ -235,6 +239,7 @@ void Settings::set(QMap<QString, QString> par)
             msgBox.exec();
         }
     }
+    s->writeParamsToJson();
 }
 
 void Settings::GetErrorMessage(QSqlQuery *query, QString transaction)

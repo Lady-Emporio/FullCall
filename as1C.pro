@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     Catalogs/BaseTable/basetable.cpp \
     Catalogs/Managers/managers.cpp \
     Catalogs/Dealers/dealers.cpp \
-    Doc/Order/orders.cpp
+    Doc/Order/orders.cpp \
+    Doc/Phone/phoneslist.cpp \
+    Doc/Phone/phone.cpp
 
 HEADERS  += mainwindow.h \
     Settings/settings.h \
@@ -36,4 +38,6 @@ HEADERS  += mainwindow.h \
     Catalogs/BaseTable/basetable.h \
     Catalogs/Managers/managers.h \
     Catalogs/Dealers/dealers.h \
-    Doc/Order/orders.h
+    Doc/Order/orders.h \
+    Doc/Phone/phoneslist.h \
+    Doc/Phone/phone.h
